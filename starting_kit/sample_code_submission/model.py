@@ -7,6 +7,8 @@ You must supply at least 4 methods:
 - load: reloads the model.
 '''
 
+import warnings
+warnings.filterwarnings('ignore')
 import pickle # Pour enregistrer et charger modèle
 import numpy as np   # We recommend to use numpy arrays
 from os.path import isfile # Fonction fichier
@@ -21,32 +23,38 @@ import matplotlib.pyplot as plt; import seaborn as sns; sns.set() # Affichage gr
 from sklearn.metrics import confusion_matrix # Matrice de confusion
 
 class preprocess:
-    def __init__(self, n_pca=4):
+    
+    CATEGORICAL_FEATURES = [0,5,7,14,15,16]
+    
+    def __init__(self, n_pca=6):
         ''' Classe pour le preprocessing
         '''
         self.is_trained = False # Etat de l'apprentissage
         self.n_pca = n_pca
         self.pca = PCA(n_components=n_pca) # Preprocessing
         # pour le moment on enleve l'isolation forest, il faut trouver un parametre qui reduit le temps d'exécution
-        #self.estimator = IsolationForest(n_estimators=10) # outlier detection
+        self.estimator = IsolationForest(n_estimators=3) # outlier detection
         
     def fit(self, X):
+        X = X[:,self.CATEGORICAL_FEATURES]
         self.pca.fit(X)
-        #self.estimator.fit(X)
+        self.estimator.fit(X)
         self.is_trained = True
         
-    def transform(self, X):
+    def transform(self, X, y):
         """ Preprocessing du jeu de données X """
-        # Il faudra changer le nombre de features également je suppose
-        #liste = []
-        #for i in range(X.shape[0]):
-        #    if self.estimator.predict(X)[i] != -1 :
-        #        liste.append(i)
-        #X = X[liste, :]
-        #X = self.estimator.transform(X) # delete outliers
+        X = X[:,self.CATEGORICAL_FEATURES]
         X = self.pca.transform(X) # reduce dimension
+ 
+        # Il faudra changer le nombre de features également je suppose
+        liste = []
+        for i in range(X.shape[0]):
+            if self.estimator.predict(X)[i] != -1 :
+                liste.append(i)
+        X = X[liste, :]
+        y = y[liste]
+        #X = self.estimator.transform(X) # delete outliers
         return X
-
 
 class model (BaseEstimator):
     def __init__(self, classifier=RandomForestClassifier()):
@@ -74,7 +82,7 @@ class model (BaseEstimator):
         '''       
        
         self.preprocess.fit(X) # fit processing
-        X = self.preprocess.transform(X) # transform
+        X = self.preprocess.transform(X, y) # transform
         self.classifier = self.load() # Rechargement du modèle optimisé
         self.classifier.fit(X, np.ravel(y)) # entrainement du modèle
         self.is_trained=True
