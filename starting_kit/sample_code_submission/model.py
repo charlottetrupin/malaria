@@ -36,17 +36,20 @@ class preprocess:
         self.estimator.fit(X)
         self.is_trained = True
         
-    def transform(self, X, y):
+    def transform(self, X, y, remove_outliers = True):
         """ Preprocessing du jeu de données X """
         # Il faudra changer le nombre de features également je suppose
-        liste = []
-        for i in range(X.shape[0]):
-            if self.estimator.predict(X)[i] != -1 :
-                liste.append(i)
-        X = X[liste, :]
+        if remove_outliers :  
+            liste = []
+            for i in range(X.shape[0]):
+                if self.estimator.predict(X)[i] != -1 :
+                    liste.append(i)
+            X = X[liste, :]
+            y = y[liste]
         X = self.pca.transform(X) # reduce dimension
-        y = y[liste]
         return X,y
+    
+    
 
 class model (BaseEstimator):
     def __init__(self, classifier=RandomForestClassifier()):
@@ -84,8 +87,11 @@ class model (BaseEstimator):
         '''
         This function  provides predictions of labels on (test) data
         '''       
-        X,y = self.preprocess.transform(X,y) # datatransform
+        y = []
+        X,_ = self.preprocess.transform(X,y, remove_outliers = False) # datatransform
         return self.classifier.predict(X) # make predictions
+
+
     
     def optimize(self, X, y, n_iter=100):
         """ 
