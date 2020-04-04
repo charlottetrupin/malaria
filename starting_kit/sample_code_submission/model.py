@@ -29,16 +29,19 @@ class preprocess:
         self.n_pca = n_pca
         self.pca = PCA(n_components=n_pca) # Preprocessing
         # pour le moment on enleve l'isolation forest, il faut trouver un parametre qui reduit le temps d'exécution
-        self.estimator = IsolationForest(n_estimators=3) # outlier detection
+        self.estimator = IsolationForest(n_estimators=5,n_jobs= -1) # outlier detection
+        
+        
         
     def fit(self, X):
+        X = X[:,[0,5,7,14,15,16]]
         self.pca.fit(X)
         self.estimator.fit(X)
         self.is_trained = True
         
     def transform(self, X, y, remove_outliers = True):
         """ Preprocessing du jeu de données X """
-        # Il faudra changer le nombre de features également je suppose
+        X = X[:,[0,5,7,14,15,16]]
         if remove_outliers :  
             liste = []
             for i in range(X.shape[0]):
