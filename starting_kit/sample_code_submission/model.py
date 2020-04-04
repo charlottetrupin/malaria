@@ -28,7 +28,6 @@ class preprocess:
         self.is_trained = False # Etat de l'apprentissage
         self.n_pca = n_pca
         self.pca = PCA(n_components=n_pca) # Preprocessing
-        # pour le moment on enleve l'isolation forest, il faut trouver un parametre qui reduit le temps d'exécution
         self.estimator = IsolationForest(n_estimators=5,n_jobs= -1) # outlier detection
         
         
@@ -45,8 +44,8 @@ class preprocess:
         if remove_outliers :  
             liste = []
             for i in range(X.shape[0]):
-                if self.estimator.predict(X)[i] != -1 :
-                    liste.append(i)
+                if self.estimator.predict(X)[i] != -1 :    
+                    liste.append(i)			 #on enlève les outliers
             X = X[liste, :]
             y = y[liste]
         X = self.pca.transform(X) # reduce dimension
