@@ -1,10 +1,29 @@
-'''Sample predictive model.
-You must supply at least 4 methods:
-- fit: trains the model.
-- predict: uses the model to perform predictions.
-- save: saves the model.
-- load: reloads the model.
-'''
+##############################################################################################
+# Fichier contenant 2 classes pour le projet Malaria (Mini-Projet)                           # 
+#                                                                                            #
+# Contributeurs principaux :                                                                 #
+# ------------------------                                                                   #
+# 1. Partie Preprocessing -> Alicia Bec & Charlotte Trupin                                   #
+# 2. Partie Model -> Maxime Vincent & Baptiste Maquet                                        #
+# 3. Partie Visualization -> Sakina Atia & Mathilde Lasseigne                                #
+#                                                                                            #
+# Historique des modifications :                                                             #
+# ----------------------------                                                               #
+# 1. Suppression d'attributs de la classe model                                              #
+# 2. Suppression de vérifications de méthodes de la classe model                             #
+# 3. Ajout de méthodes dans la classe model :                                                #
+#      3.1. Méthode model::score pour calculer le score                                      #
+#      3.2. Méthode model::optimize_model pour optimiser les hyperparamètres                 #
+#      3.3. Méthode model::confusion_matrix pour afficher une matrice de confusion           #
+# 4. Ajout d'une classe preprocess au sein du fichier model.py                               #
+# 5. Ajout d'une méthode model::optimize_preprocess pour tenter d'optimiser le preprocessing #
+#                                                                                            #
+# Date de dernière modification :                                                            #
+# -----------------------------                                                              #
+# https://github.com/charlottetrupin/malaria/commits/master/starting_kit/                    #
+# sample_code_submission/model.py                                                            #
+#                                                                                            #
+##############################################################################################
 
 import warnings
 warnings.filterwarnings('ignore')
